@@ -23,8 +23,7 @@
             $" | Статус: {(IsCompleted ? "Выполнена" : "Не выполнена")}";
 
         public Task(string title, string description, TaskPriority taskPriority) :
-            this(title, description, taskPriority, false)
-        { }
-        public Task(string title, string description) : this(title, description, TaskPriority.Low, false) { }
+            this(title, description, taskPriority, false) { }
+        public Task(string title, string description) : this(title, description, TaskPriority.Low) { }
     }
 }
