@@ -20,6 +20,16 @@
             return line;
         }
 
+        public static bool IsTask(string task)
+        {
+            if (task.Split('|').Length == 3)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public static int GetInt()
         {
             bool isCorrect;
