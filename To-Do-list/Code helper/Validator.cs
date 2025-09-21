@@ -20,16 +20,6 @@
             return line;
         }
 
-        public static bool IsTask(string task)
-        {
-            if (task.Split('|').Length == 3)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         public static int GetInt()
         {
             bool isCorrect;
@@ -43,7 +33,7 @@
                     MessageAssistant.RedMessage("Неверный формат числа! Попробуйте ещё раз: ");
                 }
             } while (isCorrect);
-            
+
             return number;
         }
 
@@ -64,5 +54,19 @@
 
             return number;
         }
+
+        public static Task? GetTask(string line)
+        {
+            if (!IsTask(line))
+            {
+                MessageAssistant.RedMessage("Строка из файла имеет некорректный формат!");
+                return null;
+            }
+
+            string[] parts = line.Split('|');
+            return new Task(parts[0], parts[1], (TaskPriority)Enum.Parse(typeof(TaskPriority), parts[2], ignoreCase: true), bool.Parse(parts[3]));
+        }
+
+        private static bool IsTask(string line) => line.Split('|').Length == 3;
     }
 }
