@@ -28,11 +28,11 @@
             do
             {
                 isCorrect = int.TryParse(Console.ReadLine(), out number);
-                if (isCorrect)
+                if (!isCorrect)
                 {
                     MessageAssistant.RedMessage("Неверный формат числа! Попробуйте ещё раз: ");
                 }
-            } while (isCorrect);
+            } while (!isCorrect);
 
             return number;
         }
@@ -67,6 +67,6 @@
             return new Task(parts[0], parts[1], (TaskPriority)Enum.Parse(typeof(TaskPriority), parts[2], ignoreCase: true), bool.Parse(parts[3]));
         }
 
-        private static bool IsTask(string line) => line.Split('|').Length == 3;
+        private static bool IsTask(string line) => line.Split('|').Length == 4;
     }
 }
