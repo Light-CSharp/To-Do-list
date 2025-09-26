@@ -46,57 +46,6 @@ namespace To_Do_list.Basic_logic
             }
         }
 
-        private void AscendingSort()
-        {
-            List<Task> ascendingTasks = new(tasks);
-            for (int i = 0; i < ascendingTasks.Count; i++)
-            {
-                for (int j = 0; j < ascendingTasks.Count - i - 1; j++)
-                {
-                    if (ascendingTasks[j].TaskPriority > ascendingTasks[j + 1].TaskPriority)
-                    {
-                        (ascendingTasks[j], ascendingTasks[j + 1]) = (ascendingTasks[j + 1], ascendingTasks[j]);
-                    }
-                }
-            }
-
-            PrintTasks(ascendingTasks);
-        }
-
-        private void DescendingSort()
-        {
-            List<Task> descendingTasks = new(tasks);
-            for (int i = 1; i < descendingTasks.Count; i++)
-            {
-                Task key = descendingTasks[i];
-                int j = i - 1;
-
-                while (j >= 0 && descendingTasks[j].TaskPriority < key.TaskPriority)
-                {
-                    descendingTasks[j + 1] = descendingTasks[j];
-                    j--;
-                }
-
-                descendingTasks[j + 1] = key;
-            }
-
-            PrintTasks(descendingTasks);
-        }
-
-        private void ByPrioritySort(TaskPriority taskPriority)
-        {
-            List<Task> byPriorityTasks = [];
-            for (int i = 0; i < tasks.Count; i++)
-            {
-                if (tasks[i].TaskPriority == taskPriority)
-                {
-                    byPriorityTasks.Add(tasks[i]);
-                }
-            }
-
-            PrintTasks(byPriorityTasks);
-        }
-
         public void AddTask(Task task)
         {
             tasks.Add(task);
@@ -153,7 +102,7 @@ namespace To_Do_list.Basic_logic
             }
         }
 
-        public void SortTasksByPriority(TaskPriority taskPriority)
+        public void SortTasks(TaskPriority taskPriority)
         {
             if (!HasTasks())
             {
@@ -161,6 +110,57 @@ namespace To_Do_list.Basic_logic
             }
 
             ByPrioritySort(taskPriority);
+        }
+
+        private void AscendingSort()
+        {
+            List<Task> ascendingTasks = new(tasks);
+            for (int i = 0; i < ascendingTasks.Count; i++)
+            {
+                for (int j = 0; j < ascendingTasks.Count - i - 1; j++)
+                {
+                    if (ascendingTasks[j].TaskPriority > ascendingTasks[j + 1].TaskPriority)
+                    {
+                        (ascendingTasks[j], ascendingTasks[j + 1]) = (ascendingTasks[j + 1], ascendingTasks[j]);
+                    }
+                }
+            }
+
+            PrintTasks(ascendingTasks);
+        }
+
+        private void DescendingSort()
+        {
+            List<Task> descendingTasks = new(tasks);
+            for (int i = 1; i < descendingTasks.Count; i++)
+            {
+                Task key = descendingTasks[i];
+                int j = i - 1;
+
+                while (j >= 0 && descendingTasks[j].TaskPriority < key.TaskPriority)
+                {
+                    descendingTasks[j + 1] = descendingTasks[j];
+                    j--;
+                }
+
+                descendingTasks[j + 1] = key;
+            }
+
+            PrintTasks(descendingTasks);
+        }
+
+        private void ByPrioritySort(TaskPriority taskPriority)
+        {
+            List<Task> byPriorityTasks = [];
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                if (tasks[i].TaskPriority == taskPriority)
+                {
+                    byPriorityTasks.Add(tasks[i]);
+                }
+            }
+
+            PrintTasks(byPriorityTasks);
         }
     }
 }
