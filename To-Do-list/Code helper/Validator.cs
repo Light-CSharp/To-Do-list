@@ -64,7 +64,7 @@
             }
 
             string[] parts = line.Split('|');
-            return new Task(parts[0], parts[1], (TaskPriority)Enum.Parse(typeof(TaskPriority), parts[2], ignoreCase: true), bool.Parse(parts[3]));
+            return new Task(parts[0], parts[1], (TaskPriority)Enum.Parse(typeof(TaskPriority), parts[2], ignoreCase: true), parts[3].Equals("да", StringComparison.CurrentCultureIgnoreCase));
         }
 
         private static bool IsTask(string line) => line.Split('|').Length == 4;
