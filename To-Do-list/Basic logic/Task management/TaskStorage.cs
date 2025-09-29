@@ -19,6 +19,17 @@ namespace To_Do_list.Basic_logic
             return true;
         }
 
+        private void PrintTasksInFile()
+        {
+            MessageAssistant.BlueMessage("Список из файла: ");
+
+            string[] lines = File.ReadAllLines(Path, Encoding.UTF8);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                MessageAssistant.BlueMessage($"Номер: {i + 1}. {lines[i]}");
+            }
+        }
+
         public void ChangePath()
         {
             bool isExist;
@@ -37,54 +48,47 @@ namespace To_Do_list.Basic_logic
             Path = newPath;
         }
 
-        private string[] ReadFileLines()
-        {
-            if (!HasPath())
-            {
-                return [];
-            }
-
-            return File.ReadAllLines(Path, Encoding.UTF8);
-        }
-
-        private 
-
-        public Task? AddTask(Task task)
+        public Task? GetTaskFromFile()
         {
             if (!HasPath())
             {
                 return null;
             }
 
-            MessageAssistant.BlueMessage("Список из файла: ");
-
             string[] lines = File.ReadAllLines(Path, Encoding.UTF8);
-            for (int i = 0; i < lines.Length; i++)
-            {
-                MessageAssistant.BlueMessage($"Номер: {i + 1}. {lines[i]}");
-            }
+            PrintTasksInFile();
 
             Console.WriteLine("Выберите номер задачи: ");
             int lineIndex = Validator.GetIntInRange(1, lines.Length) - 1; // Из номера задачи вычитаем 1, чтобы узнать индекс задачи. 
 
-            string line = lines[lineIndex];
-            if (!Validator.IsTask(line))
-            {
-                Console.WriteLine("Данная строка из файла не подходит по формату!");
-                return null;
-            }
-
-            string[] data = line.Split('|');
-            return new Task(data[0], data[1], (TaskPriority)Enum.Parse(typeof(TaskPriority), data[2], ignoreCase: true), bool.Parse(data[3]));
+            return Validator.GetTask(lines[lineIndex]);
         }
 
 
-        public List<Task>? AddTasks(List<Task> tasks)
+        public List<Task>? GetTasksFromFile(List<Task> tasks)
         {
             if (!HasPath())
             {
                 return null;
             }
+            
+            PrintTasksInFile();
+            string[] lines = File.ReadAllLines(Path, Encoding.UTF8);
+
+            List<Task> tasksFromFile = [];
+            foreach (string task in lines)
+            {
+                Task? newTask = Validator.GetTask(task);
+                if (newTask == null)
+                {
+                    MessageAssistant.RedMessage("Добавление задач из файла прервано!");
+                    return null;
+                }
+
+                tasksFromFile.Add(newTask);
+            }
+
+            return tasksFromFile;
         }
 
         public void ReadTasks()
@@ -93,6 +97,8 @@ namespace To_Do_list.Basic_logic
             {
                 return;
             }
+
+            PrintTasksInFile();
         }
     }
 }
