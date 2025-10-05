@@ -2,8 +2,10 @@
 {
     public interface ITaskStorage
     {
-        Task? GetTaskFromFile();
-        List<Task>? GetTasksFromFile(List<Task> tasks);
+        Task? GetTask();
+        List<Task>? GetTasks();
         void ReadTasks();
+        void WriteTask(Task task);
+        void WriteTasks(List<Task> tasks);
     }
 }
