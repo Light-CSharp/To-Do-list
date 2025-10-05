@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿#pragma warning disable IDE0063
+
+using System.Text;
 using To_Do_list.Basic_logic.Interfaces;
 using To_Do_list.Code_helper;
 
@@ -19,7 +21,7 @@ namespace To_Do_list.Basic_logic
             return true;
         }
 
-        private void PrintTasksInFile()
+        private void PrintTasks()
         {
             MessageAssistant.BlueMessage("Список из файла: ");
 
@@ -48,7 +50,7 @@ namespace To_Do_list.Basic_logic
             Path = newPath;
         }
 
-        public Task? GetTaskFromFile()
+        public Task? GetTask()
         {
             if (!HasPath())
             {
@@ -56,7 +58,7 @@ namespace To_Do_list.Basic_logic
             }
 
             string[] lines = File.ReadAllLines(Path, Encoding.UTF8);
-            PrintTasksInFile();
+            PrintTasks();
 
             Console.WriteLine("Выберите номер задачи: ");
             int lineIndex = Validator.GetIntInRange(1, lines.Length) - 1; // Из номера задачи вычитаем 1, чтобы узнать индекс задачи. 
@@ -64,15 +66,14 @@ namespace To_Do_list.Basic_logic
             return Validator.GetTask(lines[lineIndex]);
         }
 
-
-        public List<Task>? GetTasksFromFile(List<Task> tasks)
+        public List<Task>? GetTasks()
         {
             if (!HasPath())
             {
                 return null;
             }
-            
-            PrintTasksInFile();
+
+            PrintTasks();
             string[] lines = File.ReadAllLines(Path, Encoding.UTF8);
 
             List<Task> tasksFromFile = [];
@@ -98,7 +99,35 @@ namespace To_Do_list.Basic_logic
                 return;
             }
 
-            PrintTasksInFile();
+            PrintTasks();
+        }
+        public void WriteTask(Task task)
+        {
+            if (!HasPath())
+            {
+                return;
+            }
+
+            using (StreamWriter streamWriter = new(Path, append: true, Encoding.UTF8))
+            {
+                streamWriter.WriteLine($"{task.Title} | {task.Description} | {task.TaskPriority} | {(task.IsCompleted ? "Выполнена" : "Не выполнена")}");
+            }
+        }
+
+        public void WriteTasks(List<Task> tasks)
+        {
+            if (!HasPath())
+            {
+                return;
+            }
+
+            using (StreamWriter streamWriter = new(Path, append: true, Encoding.UTF8))
+            {
+                foreach (Task task in tasks)
+                {
+                    streamWriter.WriteLine($"{task.Title} | {task.Description} | {task.TaskPriority} | {(task.IsCompleted ? "Выполнена" : "Не выполнена")}");
+                }
+            }
         }
     }
 }
