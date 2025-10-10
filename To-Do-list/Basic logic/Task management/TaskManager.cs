@@ -16,6 +16,8 @@ namespace To_Do_list.Basic_logic
     {
         private readonly List<Task> tasks = [];
 
+        public List<Task> GetTasks => new(tasks);
+
         private bool HasTasks()
         {
             if (tasks.Count == 0)
@@ -27,11 +29,11 @@ namespace To_Do_list.Basic_logic
             return true;
         }
 
-        private int GetTaskIndex()
+        public int GetTaskIndex()
         {
             PrintTasks(tasks);
 
-            Console.WriteLine("Выберите ID задачи: ");
+            Console.Write("Выберите ID задачи: ");
             int taskIndex = Validator.GetIntInRange(1, tasks.Count) - 1; // Из номера задачи вычитаем 1, чтобы узнать индекс задачи. 
 
             return taskIndex;
@@ -39,11 +41,34 @@ namespace To_Do_list.Basic_logic
 
         private static void PrintTasks(List<Task> tasks)
         {
-            MessageAssistant.BlueMessage("Список задач: ");
+            MessageAssistant.BlueMessage("Список задач: \n");
             foreach (Task task in tasks)
             {
-                MessageAssistant.BlueMessage($"ID: {task.Id}. {task.GetInfo}");
+                MessageAssistant.BlueMessage($"ID: {task.Id}. {task.GetInfo}\n");
             }
+            Console.WriteLine();
+        }
+
+        public static Task GetTaskFromUser()
+        {
+            Console.Write("Введите заголовок: ");
+            string title = Validator.GetString();
+
+            Console.Write("Введите описание: ");
+            string description = Validator.GetString();
+
+            Console.Write("Введите приоритет (1 до 3 включительно, где 3 - важнейшая. 0 для пропуска, но закончит заполнение информации): ");
+            int priority = Validator.GetIntInRange(0, 3);
+            if (priority == 0)
+            {
+                return new Task(title, description);
+            }
+
+            Console.Write("Статус выполненной задачи (Да/Нет или любое другое выражение для пропуска): ");
+            string answer = Validator.GetString();
+            bool isCompleted = answer.Equals("да", StringComparison.OrdinalIgnoreCase);
+
+            return new Task(title, description, (TaskPriority)priority, isCompleted);
         }
 
         public void AddTask(Task task)
@@ -51,15 +76,14 @@ namespace To_Do_list.Basic_logic
             tasks.Add(task);
         }
 
-        public void DeleteTask(int taskIndex)
+        public void DeleteTask()
         {
             if (!HasTasks())
             {
                 return;
             }
 
-            taskIndex = GetTaskIndex();
-            tasks.RemoveAt(taskIndex);
+            tasks.RemoveAt(GetTaskIndex());
         }
 
         public void ReadTasks()
@@ -72,15 +96,14 @@ namespace To_Do_list.Basic_logic
             PrintTasks(tasks);
         }
 
-        public void UpdateTask(int taskIndex, Task task)
+        public void UpdateTask()
         {
             if (!HasTasks())
             {
                 return;
             }
 
-            taskIndex = GetTaskIndex();
-            tasks[taskIndex] = task;
+            tasks[GetTaskIndex()] = GetTaskFromUser();
         }
 
         public void SortTasks(SortOption sortOption)
