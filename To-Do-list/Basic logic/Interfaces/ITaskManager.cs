@@ -4,7 +4,7 @@
     {
         void AddTask(Task task);
         void ReadTasks();
-        void UpdateTask(int taskIndex, Task task);
-        void DeleteTask(int taskIndex);
+        void UpdateTask();
+        void DeleteTask();
     }
 }
