@@ -8,28 +8,20 @@ namespace To_Do_list.Basic_logic
 {
     public class TaskStorage() : ITaskStorage
     {
+        private const string INTERRUPT_VALUE = "0";
+
         public string Path { get; private set; } = default!;
-
-        private bool HasPath()
-        {
-            if (string.IsNullOrEmpty(Path))
-            {
-                MessageAssistant.RedMessage("Чтобы использовать действия с файлом нужно указать путь для них!");
-                return false;
-            }
-
-            return true;
-        }
-
+        
         private void PrintTasks()
         {
-            MessageAssistant.BlueMessage("Список из файла: ");
+            MessageAssistant.BlueMessage("Список из файла: \n");
 
             string[] lines = File.ReadAllLines(Path, Encoding.UTF8);
             for (int i = 0; i < lines.Length; i++)
             {
-                MessageAssistant.BlueMessage($"Номер: {i + 1}. {lines[i]}");
+                MessageAssistant.BlueMessage($"Номер: {i + 1}. {lines[i]}\n");
             }
+            Console.WriteLine();
         }
 
         public void ChangePath()
@@ -40,6 +32,11 @@ namespace To_Do_list.Basic_logic
             do
             {
                 newPath = Validator.GetString();
+                if (newPath == INTERRUPT_VALUE) 
+                { 
+                    return; 
+                }
+
                 isExist = File.Exists(newPath);
                 if (!isExist)
                 {
@@ -52,12 +49,13 @@ namespace To_Do_list.Basic_logic
 
         public Task? GetTask()
         {
-            if (!HasPath())
+            string[] lines = File.ReadAllLines(Path, Encoding.UTF8);
+            if (lines.Length == 0)
             {
+                MessageAssistant.RedMessage("Файл пуст!");
                 return null;
             }
 
-            string[] lines = File.ReadAllLines(Path, Encoding.UTF8);
             PrintTasks();
 
             Console.WriteLine("Выберите номер задачи: ");
@@ -68,13 +66,14 @@ namespace To_Do_list.Basic_logic
 
         public List<Task>? GetTasks()
         {
-            if (!HasPath())
+            string[] lines = File.ReadAllLines(Path, Encoding.UTF8);
+            if (lines.Length == 0)
             {
+                MessageAssistant.RedMessage("Файл пуст!");
                 return null;
             }
 
             PrintTasks();
-            string[] lines = File.ReadAllLines(Path, Encoding.UTF8);
 
             List<Task> tasksFromFile = [];
             foreach (string task in lines)
@@ -94,20 +93,11 @@ namespace To_Do_list.Basic_logic
 
         public void ReadTasks()
         {
-            if (!HasPath())
-            {
-                return;
-            }
-
             PrintTasks();
         }
+
         public void WriteTask(Task task)
         {
-            if (!HasPath())
-            {
-                return;
-            }
-
             using (StreamWriter streamWriter = new(Path, append: true, Encoding.UTF8))
             {
                 streamWriter.WriteLine($"{task.Title} | {task.Description} | {task.TaskPriority} | {(task.IsCompleted ? "Выполнена" : "Не выполнена")}");
@@ -116,11 +106,6 @@ namespace To_Do_list.Basic_logic
 
         public void WriteTasks(List<Task> tasks)
         {
-            if (!HasPath())
-            {
-                return;
-            }
-
             using (StreamWriter streamWriter = new(Path, append: true, Encoding.UTF8))
             {
                 foreach (Task task in tasks)
